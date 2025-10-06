@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 interface ImageItem {
   src: string;
@@ -8,7 +9,7 @@ interface ImageItem {
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, CommonModule],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
@@ -18,6 +19,16 @@ export class App {
   modalActive = signal(false);
   modalImageSrc = signal('');
   modalImageTitle = signal('');
+
+  // Login/Navigation state
+  isLoggedIn = signal(false);
+  showLoginModal = signal(false);
+  showMobileMenu = signal(false);
+
+  // Loading states for social logins
+  googleLoading = signal(false);
+  facebookLoading = signal(false);
+  appleLoading = signal(false);
 
   images: ImageItem[] = [
     { src: 'assets/download.jpeg', title: 'Nordic Elegance' },
@@ -50,5 +61,79 @@ export class App {
   closeModal(): void {
     this.modalActive.set(false);
     document.body.style.overflow = 'auto';
+  }
+
+  openLoginModal(): void {
+    this.showLoginModal.set(true);
+    document.body.style.overflow = 'hidden';
+  }
+
+  closeLoginModal(): void {
+    this.showLoginModal.set(false);
+    document.body.style.overflow = 'auto';
+  }
+
+  toggleMobileMenu(): void {
+    this.showMobileMenu.set(!this.showMobileMenu());
+  }
+
+  login(): void {
+    this.isLoggedIn.set(true);
+    this.closeLoginModal();
+  }
+
+  logout(): void {
+    this.isLoggedIn.set(false);
+  }
+
+  // Social Login Methods
+  loginWithGoogle(): void {
+    if (this.googleLoading()) return;
+
+    this.googleLoading.set(true);
+    console.log('Google login initiated...');
+
+    // Simulate Google OAuth flow
+    setTimeout(() => {
+      this.googleLoading.set(false);
+      this.isLoggedIn.set(true);
+      this.closeLoginModal();
+      this.showSuccessMessage('Successfully logged in with Google!');
+    }, 2000);
+  }
+
+  loginWithFacebook(): void {
+    if (this.facebookLoading()) return;
+
+    this.facebookLoading.set(true);
+    console.log('Facebook login initiated...');
+
+    // Simulate Facebook OAuth flow
+    setTimeout(() => {
+      this.facebookLoading.set(false);
+      this.isLoggedIn.set(true);
+      this.closeLoginModal();
+      this.showSuccessMessage('Successfully logged in with Facebook!');
+    }, 2000);
+  }
+
+  loginWithApple(): void {
+    if (this.appleLoading()) return;
+
+    this.appleLoading.set(true);
+    console.log('Apple login initiated...');
+
+    // Simulate Apple Sign-In flow
+    setTimeout(() => {
+      this.appleLoading.set(false);
+      this.isLoggedIn.set(true);
+      this.closeLoginModal();
+      this.showSuccessMessage('Successfully logged in with Apple!');
+    }, 2000);
+  }
+
+  private showSuccessMessage(message: string): void {
+    // You can implement a toast/notification system here
+    alert(message);
   }
 }
